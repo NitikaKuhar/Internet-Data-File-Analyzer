@@ -1,0 +1,310 @@
+SELECT job_title FROM dataAnalystJob LIMIT 10;
+
+
+# tire 1:
+
+#total number of jobs
+SELECT COUNT(job_title) as total_nums_of_job 
+FROM dataAnalystJob;
+
+#average salary for Data analyst job in USA
+SELECT  ROUND((avg(max_salary) + avg(min_salary)) / 2, 2) as average_salary 
+FROM dataAnalystJob;
+
+#minimum salary  for Data analyst job in USA
+SELECT min(min_salary) as min_salary 
+FROM dataAnalystJob;
+
+#maximum salary for Data analyst job in USA
+SELECT max(max_salary) as max_salary  
+FROM dataAnalystJob;
+
+#query to get currently available jobs
+SELECT company_name, job_title, location_city, location_state, easy_apply
+FROM dataAnalystJob WHERE easy_apply != 'None' LIMIT 15;
+
+
+Tire 2:
+
+# min salary by job title
+SELECT job_title, min_salary ,company_name, location_city,location_state
+FROM dataAnalystJob  
+WHERE job_title LIKE 'Data Analyst%'
+GROUP By job_title ORDER BY min_salary ASC
+LIMIT 10;
+
+# max salary by job title
+SELECT job_title, max_salary ,company_name, location_city,location_state
+FROM dataAnalystJob  
+WHERE job_title LIKE 'Data Analyst%'
+GROUP By job_title ORDER BY max_salary DSCE
+LIMIT 10;
+
+#top 10 company by rating for data analyst job
+SELECT company_name, rating,location_city, location_state
+FROM dataAnalystJob  
+WHERE job_title LIKE 'Data Analyst%' AND rating != 'None'
+GROUP By rating ORDER BY rating DESC
+LIMIT 10;
+
+# top 10 cities with maxsalary
+SELECT max_salary, location_city,location_city,location_state
+FROM dataAnalystJob  
+WHERE job_title LIKE 'Data Analyst%' 
+GROUP By location_city ORDER BY max_salary DESC
+LIMIT 10;
+
+#top 10 company by max_salary for data analyst job
+SELECT company_name, max_salary,location_city, location_state
+FROM dataAnalystJob  
+WHERE job_title LIKE 'Data Analyst%'
+GROUP By max_salary ORDER BY max_salary DESC
+LIMIT 10;
+
+#number of company by size
+SELECT COUNT(company_name) as total_company, size 
+FROM dataAnalystJob
+GROUP BY size;
+
+
+Tire 3:
+
+# top 10 rated company with their avg salary
+SELECT company_name, (avg( max_salary) +avg( min_salary))/2 as average_salary, rating 
+FROM dataAnalystJob 
+WHERE rating = (SELECT max(rating) FROM  dataAnalystJob WHERE rating != 'None')
+GROUP By max_salary ORDER BY max_salary DESC
+LIMIT 10;
+
+
+#number of company located state wise with  their max and min salary
+SELECT COUNT(company_name) as total_companies,max_salary, location_city,location_state
+FROM dataAnalystJob 
+GROUP BY location_state
+
+
+
+
+
+
+def plot_graph(x_axis, y_axis, title, x_label, y_label):
+    
+    # Initialize a Figure 
+    N = len(y_axis)
+    ind = np.arange(N)
+    width = 0.35
+    
+    fig = plt.figure(figsize=(15,8)) # plt.figure(figsize=(width,height))
+    
+    plot_graph = fig.add_subplot(111)
+    
+    #bar_list = plot_graph.bar(x_axis, y_axis)
+    
+    #bar1 = plot_graph.bar(ind,y_axis, width, color='black')
+    bar_list = plot_graph.bar(ind,y_axis, width)
+    
+    set_color_for_graph(bar_list)
+    
+    
+    #plt.xticks(range(0,len(x_axis)), rotation = 90)
+    #plt.xticklabels(jobs)
+    
+    
+    plot_graph.set_title(title)
+    plot_graph.set_xlabel(x_label, fontweight='bold')
+    plot_graph.set_ylabel(y_label, fontweight='bold')
+    
+    plot_graph.set_xlim(-width,len(ind)+width)
+    xTickMarks = x_axis
+    plot_graph.set_xticks(ind+width)
+    xtickNames = plot_graph.set_xticklabels(xTickMarks)
+    plt.setp(xtickNames, rotation=90, fontsize=10)
+   
+    #plot_graph.legend( (bar1[0], bar2[0]), ('Men', 'Women') )
+    # Show the plot
+    plt.show()
+    
+    
+    
+    
+    
+    
+    
+    https://people.duke.edu/~ccc14/pcfb/numpympl/MatplotlibBarPlots.html
+    
+    
+    
+    # print data in tabular
+def print_data_for_tier_two_analysis(header_data, row_data):   
+    
+    set_one_format_header = ['Job Title', 'Compnay Name', 'Job Description']
+    
+    set_one_format_header_row = []
+    
+    set_two_format_header = ['Min Salary', 'Max Salary', 'City', 'State']
+    
+    set_two_format_header_row = []
+    
+    dash = '-' * 120
+    print(dash,"\n")
+    
+
+    for h in range(0,len(header_data)):
+    
+        col_name = header_data[h]
+        print("{:<25}".format(col_name), end ="\t ")
+        
+        '''if col_name in set_one_format_header:
+            set_one_format_header_row.append(h)
+            print("{:<25}".format(col_name), end ="\t ")
+        
+        elif col_name in set_two_format_header:
+            set_two_format_header_row.append(h)
+            print("{:>15}".format(col_name), end ="\t")
+            
+        else:
+            print("{:>15s}".format(col_name), end ="\t ")'''
+    
+    print("\n")
+    print(dash)
+    print("\n") 
+
+    # To print rows
+    for r in range(0,len(row_data)):
+        
+        col = row_data[r]
+        
+        for c in range(0,len(col)):
+            
+            #if c in set_one_format_header_row:
+                print("{:<30}".format(col[c]), end ="\t")
+                
+            #else:
+                #print("{:<15}".format(col[c]), end ="\t")
+        
+        print("\n")
+        
+
+
+def plot_graph(x_axis, y_axis, title, x_label, y_label, filename):
+    
+ 
+    N = len(y_axis)
+    ind = np.arange(N)
+    width = 0.45
+    
+    # Initialize a Figure 
+    fig = plt.figure(figsize=(15,8)) # plt.figure(figsize=(width,height))
+    
+    plot_graph = fig.add_subplot(111)
+    
+    #bar_list = plot_graph.bar(x_axis, y_axis)
+    
+    #bar1 = plot_graph.bar(ind,y_axis, width, color='black')
+    bar_list = plot_graph.bar(ind,y_axis, width)
+    
+    set_color_for_graph(bar_list)
+    
+    
+    #plt.xticks(range(0,len(x_axis)), rotation = 90)
+    #plt.xticklabels(jobs)
+    
+    plot_graph.set_title(title)
+    plot_graph.set_xlabel(x_label, fontweight='bold', fontsize='15')
+    plot_graph.set_ylabel(y_label, fontweight='bold', fontsize='15')
+    
+    # formatting the x axis label
+    plot_graph.set_xlim(-width,len(ind)+width)
+    #plot_graph.set_xlim(right = 2)
+    
+    #plot_graph.set_xlim(-0.45, 10)
+    #print("x_lim", plot_graph.get_xlim())
+    
+    xTickMarks = x_axis
+    plot_graph.set_xticks(ind+width)
+    xtickNames = plot_graph.set_xticklabels(xTickMarks)
+    
+    plt.setp(xtickNames, rotation=90, fontsize=12)
+     
+    # to save image at ur curernt folder
+    plt.savefig(filename,transparent=True, bbox_inches='tight', pad_inches=0.3)
+    
+    # Show the plot
+    plt.show()
+    
+    
+    
+   def get_max_salary_by_job_title_analysis():
+    conn = sql_connection()
+    
+    select_query = f'''SELECT job_title, max_salary ,company_name, location_state
+                        FROM {table_name} 
+                        WHERE job_title LIKE 'Data Analyst%'
+                        GROUP By job_title ORDER BY max_salary DESC
+                        LIMIT 10;'''
+    
+    cursor_obj = conn.cursor()
+    
+    cursor_obj.execute(select_query)
+    
+    rows = cursor_obj.fetchall()
+    
+    close_database_connection(conn)
+    
+    #print data in tabular form
+    print("\n\n************** Tabular Representation ***************** \n\n")
+    header_data = ['Job Title', 'Max Salary', 'Company Name', 'State']
+    print_data_for_tier_two_analysis(header_data, rows)
+    
+   
+    job_title = 0
+    max_salary = 1
+   
+    
+    #set point for graph to draw graph for the above table
+     
+    title = "Maximum Salary by Job Title"
+    x_label = "Jobs Title"
+    y_label = "Salary (IN USD )"
+    
+    print("\n\n***************** Graph Representation ********************* \n\n")
+    set_points_for_graph(rows,job_title, max_salary, title, x_label, y_label, title,None)
+    
+    
+# get min  salary by job_title LIKE 'Data Analyst%'
+
+def get_min_salary_by_job_title_analysis():
+    conn = sql_connection()
+    
+    select_query = f'''SELECT job_title, min_salary ,company_name,location_state
+                        FROM dataAnalystJob  
+                        WHERE job_title LIKE 'Data Analyst%'
+                        GROUP By job_title ORDER BY min_salary ASC
+                        LIMIT 10;'''
+    
+    cursor_obj = conn.cursor()
+    
+    cursor_obj.execute(select_query)
+    
+    rows = cursor_obj.fetchall()
+    
+    close_database_connection(conn)
+    
+    
+    #print data in tabular form
+    print("\n\n************** Tabular Representation ***************** \n\n")
+    header_data = ['Job Title', 'Min Salary', 'Company Name', 'State']
+    print_data_for_tier_two_analysis(header_data, rows)
+    
+    #set point for graph to draw graph for the above table
+    job_title = 0
+    min_salary = 1
+    
+    title = "Minimum Salary by Job Profile"
+    x_label = "Jobs Title"
+    y_label = "Salary (IN USD )"
+    
+    print("\n\n***************** Graph Representation ********************* \n\n")
+    set_points_for_graph(rows,job_title, min_salary, title, x_label, y_label, title, None)
+
+    
